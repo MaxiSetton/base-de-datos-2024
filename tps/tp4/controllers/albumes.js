@@ -1,6 +1,14 @@
 import { conn } from "../db.js";
 
 const getAlbumes = async (_, res) => {
+    try{ 
+        const [results, _]= await conn.query(
+    `SELECT albumes.nombre,albumes.id, artistas.nombre from albumes JOIN artistas ON albumes.artista = artistas.id`
+    )
+    res.send(results)}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que devuelve todos los albumes
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la siguiente forma:
