@@ -1,26 +1,27 @@
 import { conn } from "../db.js";
 
-const getArtistas = async (_, res) => {
-    // Completar con la consulta que devuelve todos los artistas
-    // Recordar que los parámetros de una consulta GET se encuentran en req.params
-    // Deberían devolver los datos de la siguiente forma:
-    /*
-        [
-            {
-                "id": "Id del artista",
-                "nombre": "Nombre del artista"
-            },
-            {
-                "id": "Id del artista",
-                "nombre": "Nombre del artista"
-            },
-            ...
-        ]
-    */
+const getArtistas = async (req, res) => {
+    try{ 
+        const [rows, fields]= await conn.query(
+    "SELECT * FROM artistas"
+    )
+    res.json(rows)}
+    catch(err){
+        console.log(err)
+    }
+    
 };
 
 const getArtista = async (req, res) => {
-    // Completar con la consulta que devuelve un artista
+    const id= req.params.id;
+    try{ 
+        const [rows, fields]= await conn.query(
+    "SELECT * FROM artistas WHERE artistas.id=?",[id]
+    )
+    res.json(rows[0])}
+    catch(err){
+        console.log(err)
+    }// Completar con la consulta que devuelve un artista
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la siguiente forma:
     /*
@@ -32,6 +33,16 @@ const getArtista = async (req, res) => {
 };
 
 const createArtista = async (req, res) => {
+    const nombreArtista= req.body.nombre
+    
+    try{ 
+        const [rows, fields]= await conn.query(
+    "INSERT INTO artistas (nombre) VALUES (?)",[nombreArtista]
+    )
+    res.send("Se insertó el artista correctamente")}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que crea un artista
     // Recordar que los parámetros de una consulta POST se encuentran en req.body
     // Deberían recibir los datos de la siguiente forma:
@@ -43,6 +54,17 @@ const createArtista = async (req, res) => {
 };
 
 const updateArtista = async (req, res) => {
+    const id=req.params.id
+    const nombreArtista= req.body.nombre
+    
+    try{ 
+        const [rows, fields]= await conn.query(
+    "UPDATE artistas SET nombre=? WHERE artistas.id=?",[nombreArtista,artistas.id]
+    )
+    res.send("Artista actualizado correctamente")}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que actualiza un artista
     // Recordar que en este caso tienen parámetros en req.params (el id) y en req.body (los demás datos)
     // Deberían recibir los datos de la siguiente forma:
@@ -54,6 +76,15 @@ const updateArtista = async (req, res) => {
 };
 
 const deleteArtista = async (req, res) => {
+    const id=req.params.id
+    try{ 
+        const [rows, fields]= await conn.query(
+    "DELETE FROM artistas WHERE id=?",[id]
+    )
+    res.send("Se borró el artista correctamente")}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que elimina un artista
     // Recordar que los parámetros de una consulta DELETE se encuentran en req.params
 };

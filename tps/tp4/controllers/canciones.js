@@ -1,6 +1,14 @@
 import { conn } from "../db.js";
 
 const getCanciones = async (_, res) => {
+    try{ 
+        const [rows, fields]= await conn.query(
+    "SELECT canciones.id, canciones.nombre,artistas.nombre AS nombre_artista, albumes.nombre AS nombre_album, canciones.duracion, canciones.reproducciones FROM canciones JOIN albumes ON canciones.album=albumes.id JOIN artistas ON albumes.artista=artistas.id"
+    )
+    res.json(rows)}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que devuelve todas las canciones
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la siguiente forma:
@@ -28,6 +36,15 @@ const getCanciones = async (_, res) => {
 };
 
 const getCancion = async (req, res) => {
+    const id= req.params.id;
+    try{ 
+        const [rows, fields]= await conn.query(
+    "SELECT canciones.id, canciones.nombre,artistas.nombre AS nombre_artista, albumes.nombre AS nombre_album, canciones.duracion, canciones.reproducciones FROM canciones JOIN albumes ON canciones.album=albumes.id JOIN artistas ON albumes.artista=artistas.id WHERE canciones.id=?",[id]
+    )
+    res.json(rows[0])}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que devuelve una canción
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la siguiente forma:
@@ -44,6 +61,18 @@ const getCancion = async (req, res) => {
 };
 
 const createCancion = async (req, res) => {
+    const nombreCancion= req.body.nombre
+    const album=req.body.album
+    const duracion=req.body.duracion
+    
+    try{ 
+        const [rows, fields]= await conn.query(
+    "INSERT INTO canciones (nombre, album, duracion) VALUES (?,?,?)",[nombreCancion, album,duracion]
+    )
+    res.send("Se insertó la cancion correctamente")}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que crea una canción
     // Recordar que los parámetros de una consulta POST se encuentran en req.body
     // Deberían recibir los datos de la siguiente forma:
