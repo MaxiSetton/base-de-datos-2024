@@ -12,7 +12,18 @@ app.get("/", (_, res) => {
     res.send("SpoTICfy API working!");
 });
 
-app.get("/albumes", albumes.getAlbumes);
+//artistas
+app.get("/artistas", artistas.getArtistas)
+app.get("/artistas/:id", artistas.getArtista)
+
+
+
+//albumes
+app.get("/albumes", albumes.getAlbumes)
+app.get("/albumes/:id", albumes.getAlbum)
+app.post("/albumes",albumes.createAlbum)
+app.put("/albumes/:id", albumes.updateAlbum)
+app.delete("/albumes/:id", albumes.deleteAlbum)
 
 /* ------------------- Rutas ------------------- */
 
