@@ -3,7 +3,9 @@ import { conn } from "../db.js";
 const getAlbumes = async (_, res) => {
     try{ 
         const [rows, fields]= await conn.query(
-    "SELECT albumes.id, albumes.nombre, artistas.nombre AS nombre_artista FROM albumes JOIN artistas ON albumes.artista = artistas.id"
+    `SELECT albumes.id, albumes.nombre, artistas.nombre AS nombre_artista 
+    FROM albumes 
+    JOIN artistas ON albumes.artista = artistas.id`
     )
     res.json(rows)}
     catch(err){
@@ -15,7 +17,10 @@ const getAlbum = async (req, res) => {
     const id=req.params.id
     try{ 
         const [rows, fields]= await conn.query(
-    "SELECT albumes.id, albumes.nombre, artistas.nombre AS nombre_artista FROM albumes JOIN artistas ON albumes.artista = artistas.id WHERE albumes.id=?",[id]
+    `SELECT albumes.id, albumes.nombre, artistas.nombre AS nombre_artista 
+    FROM albumes 
+    JOIN artistas ON albumes.artista = artistas.id 
+    WHERE albumes.id=?`,[id]
     )
     res.json(rows[0])}
     catch(err){
@@ -52,7 +57,7 @@ const updateAlbum = async (req, res) => {
     const artista= req.body.artista
     try{ 
         const [rows, fields]= await conn.query(
-    "UPDATE albumes SET  nombre=?, artista=?WHERE albumes.id= ?",[nombreAlbum, artista, id]
+    "UPDATE albumes SET  nombre=?, artista=? WHERE albumes.id= ?",[nombreAlbum, artista, id]
     )
     res.send("Se actualizó el album correctamente")}
     catch(err){
@@ -83,6 +88,19 @@ const deleteAlbum = async (req, res) => {
 };
 
 const getCancionesByAlbum = async (req, res) => {
+    const id=req.params.id
+    try{ 
+        const [rows, fields]= await conn.query(
+    `SELECT canciones.id, canciones.nombre,artistas.nombre AS nombre_artista, albumes.nombre AS nombre_album, canciones.duracion, canciones.reproducciones 
+    FROM albumes 
+    JOIN canciones ON albumes.id=canciones.album 
+    JOIN artistas ON albumes.artista=artistas.id 
+    WHERE albumes.id=?`,[id]
+    )
+    res.json(rows)}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que devuelve las canciones de un album
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la misma forma que getCanciones

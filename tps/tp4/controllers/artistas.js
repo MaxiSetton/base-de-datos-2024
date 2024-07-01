@@ -59,7 +59,7 @@ const updateArtista = async (req, res) => {
     
     try{ 
         const [rows, fields]= await conn.query(
-    "UPDATE artistas SET nombre=? WHERE artistas.id=?",[nombreArtista,artistas.id]
+    "UPDATE artistas SET nombre=? WHERE artistas.id=?",[nombreArtista,id]
     )
     res.send("Artista actualizado correctamente")}
     catch(err){
@@ -90,12 +90,37 @@ const deleteArtista = async (req, res) => {
 };
 
 const getAlbumesByArtista = async (req, res) => {
+    const id=req.params.id
+    try{ 
+        const [rows, fields]= await conn.query(
+    `SELECT albumes.id, albumes.nombre, artistas.nombre AS nombre_artista 
+    FROM artistas 
+    JOIN albumes ON artistas.id = albumes.artista 
+    WHERE artistas.id=?`,[id]
+    )
+    res.json(rows)}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que devuelve las canciones de un artista
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la misma forma que getAlbumes
 };
 
 const getCancionesByArtista = async (req, res) => {
+    const id=req.params.id
+    try{ 
+        const [rows, fields]= await conn.query(
+    `SELECT canciones.id, canciones.nombre,artistas.nombre AS nombre_artista, albumes.nombre AS nombre_album, canciones.duracion, canciones.reproducciones 
+    FROM artistas 
+    JOIN albumes ON artistas.id=albumes.artista 
+    JOIN canciones ON albumes.id=canciones.album
+    WHERE artistas.id=?`,[id]
+    )
+    res.json(rows)}
+    catch(err){
+        console.log(err)
+    }
     // Completar con la consulta que devuelve las canciones de un artista
     // (tener en cuenta que las canciones están asociadas a un álbum, y los álbumes a un artista)
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
